@@ -42,3 +42,4 @@ Route::get('config' , function(){
 Route::get('public-path' , function(){
     return storage_path('app/public');
 });
+

@@ -44,3 +44,4 @@ class AuthorController extends Controller
         return ResponseHelper::success('تمت حذف المؤلف', $author);
     }
 }
+

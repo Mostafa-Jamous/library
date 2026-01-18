@@ -1,18 +1,13 @@
 <?php
 
-<<<<<<< HEAD
-=======
 use App\Models\Author;
 use App\Models\Book;
 use App\Models\Category;
->>>>>>> 0253129807e34e3c66c1a72cfbc2149b85dadab7
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
-<<<<<<< HEAD
-=======
 
 /** ************* 1-m relation ************/
 Route::get('1-m-child/{category}', function (Category $category) {
@@ -88,4 +83,3 @@ Route::get('detach/{author}', function (Author $author) {
     $author->books()->detach(5);
     return $author->load('books');
 });
->>>>>>> 0253129807e34e3c66c1a72cfbc2149b85dadab7

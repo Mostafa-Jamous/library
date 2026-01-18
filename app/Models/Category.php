@@ -18,6 +18,5 @@ class Category extends Model
 
     function books(){
         return $this->hasMany(Book::class );
->>>>>>> 0253129807e34e3c66c1a72cfbc2149b85dadab7
     }
 }

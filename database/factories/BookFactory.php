@@ -26,3 +26,4 @@ class BookFactory extends Factory
         ];
     }
 }
+

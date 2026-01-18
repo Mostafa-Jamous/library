@@ -23,3 +23,4 @@ class CategorySeeder extends Seeder
         Category::insert($categories);
     }
 }
+

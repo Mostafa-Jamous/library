@@ -21,3 +21,4 @@ class AuthorFactory extends Factory
         ];
     }
 }
+
