@@ -31,7 +31,6 @@ Route::apiResource('books' , BookController::class);
 
 Route::apiResource('authors', AuthorController::class);
 
-
 /** **************** test routes ***************/
 Route::get('env' , function(){
     return env('APP_NAME' , 'not found');

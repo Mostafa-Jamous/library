@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\ResponseHelper;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
@@ -15,7 +14,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories =  Category::all();
+        // $categories =  Category::all();
+        // $categories =  Category::withAvg('books' , 'price')->get();
+        $categories =  Category::withCount('books')->get();
        return ResponseHelper::success(' جميع الأصناف',$categories);
     }
 
@@ -25,19 +26,10 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|max:50|unique:categories',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'name' => 'required|max:50|unique:categories'
         ]);
         $category = new Category();
         $category->name = $request->name;
-
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = "$request->id." . $file->extension();
-            Storage::putFileAs('category-images', $file, $filename);
-            $category->image = $filename;
-        }
-
         $category->save();
         return ResponseHelper::success("تمت إضافة الصنف" , $category);
     }
