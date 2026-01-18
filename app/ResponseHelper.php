@@ -18,12 +18,12 @@ class ResponseHelper{
         ];
     }
     
-    static function error($message ="خطأ" , $data = null, $statusCode = 400){
+    static function error($message ="خطأ" , $data = null){
         return response([
             'success' => false,
             'message' => $message,
             'data' => $data,
-        ], $statusCode);
+        ]);
     }
 }
 

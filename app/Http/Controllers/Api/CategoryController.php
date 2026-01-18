@@ -50,11 +50,20 @@ class CategoryController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'name' => "required|max:50|unique:categories,name,$id"
+            'name' => "required|max:50|unique:categories,name,$id",
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
         $category = Category::find($id);
         $category->name = $request->name;
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = "$request->id." . $file->extension();
+            Storage::putFileAs('category-images', $file, $filename);
+            $category->image = $filename;
+        }
+
         $category->save();
         return ResponseHelper::success("تم تعديل الصنف" , $category);
 
@@ -69,7 +78,7 @@ class CategoryController extends Controller
         
         // Check if category has associated books
         if ($category->books()->count() > 0) {
-            return ResponseHelper::error("لا يمكن حذف الصنف لوجود كتب مرتبطة به" . $category->books()->count() , null, 409);
+            return ResponseHelper::error("لا يمكن حذف الصنف لوجود كتب مرتبطة به" . $category->books()->count() , null);
         
         }
         
