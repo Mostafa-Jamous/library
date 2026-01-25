@@ -11,6 +11,7 @@ class Book extends Model
     use HasFactory;
 
      protected $fillable = ['ISBN', 'title', 'price', 'mortgage', 'category_id', 'cover', 'authorship_date'];
+    //  protected $guraded = [];
 
 
     function category(){

@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BookRequest;
 use App\Models\Book;
-use App\Http\Requests\StoreBookRequest;
-use App\Http\Requests\UpdateBookRequest;
 use App\Http\Resources\BookResource;
 use App\ResponseHelper;
 use Illuminate\Http\Request;
@@ -56,18 +55,25 @@ class BookController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreBookRequest $request)
+    public function store(BookRequest $request)
     {
         //  return $request->all();
-        $book = Book::create($request->validated());
-
+        $validated = $request->validated();
+        
         if ($request->hasFile('cover')) {
             $file = $request->file('cover');
             $filename = "$request->ISBN." . $file->extension();
             Storage::putFileAs('book-images', $file, $filename);
-            $book->cover = $filename;
-            $book->save();
+            $validated['cover'] = $filename;
         }
+        $book = Book::create($validated);
+
+        // ربط المؤلفين بالكتاب
+        $book->authors()->attach($validated['authors'] ?? []);
+        
+        // تحميل العلاقات لإرجاعها في الاستجابة
+        $book->load(['category', 'authors']);
+
         return ResponseHelper::success("تمت إضافة الكتاب", $book);
     }
 
@@ -76,7 +82,7 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        $book = $book->load(['authors:name', 'category']);
+        $book = $book->load(['authors', 'category']);
 
         return ResponseHelper::success("تم إعادة الكتاب بنجاح", new BookResource($book));
     }
@@ -85,10 +91,10 @@ class BookController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateBookRequest $request, Book $book)
+    public function update(BookRequest $request, Book $book)
     {
         $validated = $request->validated();
-        
+
         if ($request->hasFile('cover')) {
             $file = $request->file('cover');
             $filename = "$request->ISBN." . $file->extension();
@@ -101,6 +107,12 @@ class BookController extends Controller
             $validated['cover'] = $filename;
         }
         $book->update($validated);
+
+
+        $book->authors()->sync($validated['authors'] ?? []);
+        
+        $book->load(['category', 'authors']);
+
         return ResponseHelper::success("تمت تعديل الكتاب", $book);
     }
 
