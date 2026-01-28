@@ -9,12 +9,19 @@ use Illuminate\Http\Request;
 
 class AuthorController extends Controller
 {
+<<<<<<< HEAD
+=======
+    /**
+     * Display a listing of the resource.
+     */
+>>>>>>> aa628cf8a6b89fb39e9cae32c4a0d1f2a3ef61a6
     public function index()
     {
         $authors = Author::all();
         return ResponseHelper::success('جميع المؤلفين', $authors);
     }
 
+<<<<<<< HEAD
     public function store(Request $request)
     {
         $request->validate([
@@ -45,3 +52,47 @@ class AuthorController extends Controller
     }
 }
 
+=======
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|max:70'
+        ]);
+
+        $author = new Author();
+        $author->name = $request->name;
+        $author->save();
+
+        return ResponseHelper::success("تمت إضافة المؤلف", $author);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Author $author)
+    {
+        $request->validate([
+            'name' => "required|max:70"
+        ]);
+
+        $author->name = $request->name;
+        $author->save();
+
+        return ResponseHelper::success("تم تعديل المؤلف", $author);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Author $author)
+    {
+     
+        $author->delete();
+
+        return ResponseHelper::success("تم حذف المؤلف", $author);
+    }
+}
+>>>>>>> aa628cf8a6b89fb39e9cae32c4a0d1f2a3ef61a6

@@ -6,6 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\ResponseHelper;
 use Illuminate\Http\Request;
+<<<<<<< HEAD
+=======
+use Illuminate\Support\Facades\App;
+>>>>>>> aa628cf8a6b89fb39e9cae32c4a0d1f2a3ef61a6
 use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
@@ -13,10 +17,19 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+<<<<<<< HEAD
         $categories =  Category::all();
        return ResponseHelper::success(' جميع الأصناف',$categories);
+=======
+        // $categories =  Category::all();
+        // $categories =  Category::withAvg('books' , 'price')->get();
+        $categories =  Category::withCount('books')->get();
+
+        //    return ResponseHelper::success(trans('library.all-categories'),$categories);
+        return ResponseHelper::success(__('library.all-categories'), $categories);
+>>>>>>> aa628cf8a6b89fb39e9cae32c4a0d1f2a3ef61a6
     }
 
     /**
@@ -26,23 +39,34 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name' => 'required|max:50|unique:categories',
+<<<<<<< HEAD
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+=======
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:2048'
+>>>>>>> aa628cf8a6b89fb39e9cae32c4a0d1f2a3ef61a6
         ]);
         $category = new Category();
         $category->name = $request->name;
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
+<<<<<<< HEAD
             $filename = "$request->id." . $file->extension();
             Storage::putFileAs('category-images', $file, $filename);
+=======
+            $filename = time() . '_' . $file->getClientOriginalName();
+            Storage::putFileAs('category-images', $file, $filename);
+            // حفظ اسم الملف في قاعدة البيانات
+>>>>>>> aa628cf8a6b89fb39e9cae32c4a0d1f2a3ef61a6
             $category->image = $filename;
         }
 
         $category->save();
-        return ResponseHelper::success("تمت إضافة الصنف" , $category);
+
+        return ResponseHelper::success("تمت إضافة الصنف", $category);
     }
 
-    
+
 
     /**
      * Update the specified resource in storage.
@@ -54,8 +78,9 @@ class CategoryController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        $category = Category::find($id);
+        $category = Category::findorfail($id);
         $category->name = $request->name;
+<<<<<<< HEAD
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
@@ -66,13 +91,27 @@ class CategoryController extends Controller
 
         $category->save();
         return ResponseHelper::success("تم تعديل الصنف" , $category);
+=======
+>>>>>>> aa628cf8a6b89fb39e9cae32c4a0d1f2a3ef61a6
 
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            Storage::putFileAs('category-images', $file, $filename);
+            if ($category->image)                
+                Storage::delete("category-images/$category->image");
+            // حفظ اسم الملف في قاعدة البيانات
+            $category->image = $filename;
+        }
+        $category->save();
+        return ResponseHelper::success("تم تعديل الصنف", $category);
     }
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
+<<<<<<< HEAD
     {
         $category = Category::find($id);
         
@@ -82,7 +121,22 @@ class CategoryController extends Controller
         
         }
         
+=======
+    {        
+        $category = Category::findorfail($id);
+        
+        // التحقق من وجود كتب مرتبطة بالصنف
+        $booksCount = $category->books()->count();
+        if ($booksCount > 0) {
+            return ResponseHelper::failed("لا يمكن حذف الصنف لوجود $booksCount كتاب مرتبط به");
+        }
+
+        if ($category->image)                
+                Storage::delete("category-images/$category->image");
+
+
+>>>>>>> aa628cf8a6b89fb39e9cae32c4a0d1f2a3ef61a6
         $category->delete();
-        return ResponseHelper::success("تم حذف الصنف" , $category);
+        return ResponseHelper::success("تم حذف الصنف");
     }
 }

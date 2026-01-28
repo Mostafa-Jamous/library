@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthorController;
 use App\Http\Controllers\BookController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AuthorController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -28,6 +29,7 @@ Route::delete('categories/{id}' , [CategoryController::class,  'destroy']);
 // Route::apiResource('books' , BookController::class)->except('show');
 // Route::apiResource('books' , BookController::class)->only('index' ,'show');
 Route::apiResource('books' , BookController::class);
+Route::apiResource('authors' , AuthorController::class);
 
 Route::apiResource('authors', AuthorController::class);
 
